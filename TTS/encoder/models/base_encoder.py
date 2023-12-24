@@ -10,6 +10,14 @@ from TTS.utils.io import load_fsspec
 
 
 class PreEmphasis(nn.Module):
+    """
+    预加重层，它会在输入信号上应用预加重滤波器，以提高语音识别和语音生成任务中的性能。
+
+    在初始化时，可以指定预加重系数。预加重滤波器的系数通常为0.95或0.97。
+    在前向传递时，该层将输入信号进行一维卷积，并返回添加了预加重滤波器的信号。
+    在这个过程中，还通过对输入信号进行反射填充来保留信号长度。最终输出的形状与输入信号相同。
+
+    """
     def __init__(self, coefficient=0.97):
         super().__init__()
         self.coefficient = coefficient
@@ -33,6 +41,14 @@ class BaseEncoder(nn.Module):
         super(BaseEncoder, self).__init__()
 
     def get_torch_mel_spectrogram_class(self, audio_config):
+        """
+        预加重，以及梅尔频谱变换
+        Args:
+            audio_config ():
+
+        Returns:
+
+        """
         return torch.nn.Sequential(
             PreEmphasis(audio_config["preemphasis"]),
             # TorchSTFT(
@@ -96,6 +112,7 @@ class BaseEncoder(nn.Module):
         return embeddings
 
     def get_criterion(self, c: Coqpit, num_classes=None):
+        """仅仅支持三种loss"""
         if c.loss == "ge2e":
             criterion = GE2ELoss(loss_method="softmax")
         elif c.loss == "angleproto":

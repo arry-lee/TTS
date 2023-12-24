@@ -7,111 +7,104 @@ from trainer import TrainerConfig
 
 @dataclass
 class BaseAudioConfig(Coqpit):
-    """Base config to definge audio processing parameters. It is used to initialize
-    ```TTS.utils.audio.AudioProcessor.```
+    """用于定义音频处理参数的基本配置。用于初始化```TTS.utils.audio.AudioProcessor。```
 
     Args:
         fft_size (int):
-            Number of STFT frequency levels aka.size of the linear spectogram frame. Defaults to 1024.
+            STFT频率级别数，也就是线性频谱图帧的大小。默认为1024。
 
         win_length (int):
-            Each frame of audio is windowed by window of length ```win_length``` and then padded with zeros to match
-            ```fft_size```. Defaults to 1024.
+            每个音频帧都被长度为```win_length```的窗口进行窗口处理，然后用零填充以匹配```fft_size```。默认为1024。
 
         hop_length (int):
-            Number of audio samples between adjacent STFT columns. Defaults to 1024.
+            相邻的STFT列之间的音频样本数。默认为1024。
 
         frame_shift_ms (int):
-            Set ```hop_length``` based on milliseconds and sampling rate.
+            基于毫秒和采样率设置```hop_length```。
 
         frame_length_ms (int):
-            Set ```win_length``` based on milliseconds and sampling rate.
+            基于毫秒和采样率设置```win_length```。
 
         stft_pad_mode (str):
-            Padding method used in STFT. 'reflect' or 'center'. Defaults to 'reflect'.
+            STFT中使用的填充方法。'reflect'或'center'。默认为'reflect'。
 
         sample_rate (int):
-            Audio sampling rate. Defaults to 22050.
+            音频采样率。默认为22050。
 
         resample (bool):
-            Enable / Disable resampling audio to ```sample_rate```. Defaults to ```False```.
+            启用/禁用将音频重采样为```sample_rate```。默认为```False```.
 
         preemphasis (float):
-            Preemphasis coefficient. Defaults to 0.0.
+            预加重系数。默认为0.0。
 
         ref_level_db (int): 20
-            Reference Db level to rebase the audio signal and ignore the level below. 20Db is assumed the sound of air.
-            Defaults to 20.
+            用于重新调整音频信号并忽略低于该水平的参考Db级别。假定20Db为空气的声音。默认为20。
 
         do_sound_norm (bool):
-            Enable / Disable sound normalization to reconcile the volume differences among samples. Defaults to False.
+            启用/禁用对音频样本之间的音量差异进行声音标准化。默认为False。
 
         log_func (str):
-            Numpy log function used for amplitude to DB conversion. Defaults to 'np.log10'.
+            用于幅度到DB转换的Numpy对数函数。默认为'np.log10'。
 
         do_trim_silence (bool):
-            Enable / Disable trimming silences at the beginning and the end of the audio clip. Defaults to ```True```.
+            启用/禁用裁剪音频片段开头和结尾的静音。默认为```True```.
 
         do_amp_to_db_linear (bool, optional):
-            enable/disable amplitude to dB conversion of linear spectrograms. Defaults to True.
+            启用/禁用线性频谱图的幅度到dB转换。默认为True。
 
         do_amp_to_db_mel (bool, optional):
-            enable/disable amplitude to dB conversion of mel spectrograms. Defaults to True.
+            启用/禁用mel频谱图的幅度到dB转换。默认为True。
 
         pitch_fmax (float, optional):
-            Maximum frequency of the F0 frames. Defaults to ```640```.
+            F0帧的最大频率。默认为```640```.
 
         pitch_fmin (float, optional):
-            Minimum frequency of the F0 frames. Defaults to ```1```.
+            F0帧的最小频率。默认为```1```.
 
         trim_db (int):
-            Silence threshold used for silence trimming. Defaults to 45.
+            用于静音修剪的静音阈值。默认为45。
 
         do_rms_norm (bool, optional):
-            enable/disable RMS volume normalization when loading an audio file. Defaults to False.
+            加载音频文件时启用/禁用RMS音量标准化。默认为False。
 
         db_level (int, optional):
-            dB level used for rms normalization. The range is -99 to 0. Defaults to None.
+            用于rms标准化的dB级别。范围为-99至0。默认为None。
 
         power (float):
-            Exponent used for expanding spectrogra levels before running Griffin Lim. It helps to reduce the
-            artifacts in the synthesized voice. Defaults to 1.5.
+            用于扩展声谱图级别的指数，在运行Griffin Lim之前有助于减少合成声音中的伪影。默认为1.5。
 
         griffin_lim_iters (int):
-            Number of Griffing Lim iterations. Defaults to 60.
+            Griffin Lim迭代次数。默认为60。
 
         num_mels (int):
-            Number of mel-basis frames that defines the frame lengths of each mel-spectrogram frame. Defaults to 80.
+            定义每个mel频谱图帧的帧长度的mel基础帧数量。默认为80。
 
-        mel_fmin (float): Min frequency level used for the mel-basis filters. ~50 for male and ~95 for female voices.
-            It needs to be adjusted for a dataset. Defaults to 0.
+        mel_fmin (float): 用于mel基础滤波器的最小频率级别。男性声音约为50，女性声音约为95。需要根据数据集进行调整。默认为0。
 
         mel_fmax (float):
-            Max frequency level used for the mel-basis filters. It needs to be adjusted for a dataset.
+            用于mel基础滤波器的最大频率级别。需要根据数据集进行调整。
 
         spec_gain (int):
-            Gain applied when converting amplitude to DB. Defaults to 20.
+            在将幅度转换为DB时应用的增益。默认为20。
 
         signal_norm (bool):
-            enable/disable signal normalization. Defaults to True.
+            启用/禁用信号标准化。默认为True。
 
         min_level_db (int):
-            minimum db threshold for the computed melspectrograms. Defaults to -100.
+            计算的melspectrograms的最小db阈值。默认为-100。
 
         symmetric_norm (bool):
-            enable/disable symmetric normalization. If set True normalization is performed in the range [-k, k] else
-            [0, k], Defaults to True.
+            启用/禁用对称标准化。如果设置为True，则在范围[-k, k]内执行标准化，否则在范围[0, k]内。默认为True。
 
         max_norm (float):
-            ```k``` defining the normalization range. Defaults to 4.0.
+            定义规范化范围的```k```。默认为4.0。
 
         clip_norm (bool):
-            enable/disable clipping the our of range values in the normalized audio signal. Defaults to True.
+            启用/禁用对标准化音频信号中超出范围的值进行裁剪。默认为True。
 
         stats_path (str):
-            Path to the computed stats file. Defaults to None.
+            计算的统计文件的路径。默认为None。
     """
-
     # stft parameters
     fft_size: int = 1024
     win_length: int = 1024
@@ -190,39 +183,36 @@ class BaseAudioConfig(Coqpit):
 
 @dataclass
 class BaseDatasetConfig(Coqpit):
-    """Base config for TTS datasets.
+    """TTS数据集的基本配置。
 
     Args:
         formatter (str):
-            Formatter name that defines used formatter in ```TTS.tts.datasets.formatter```. Defaults to `""`.
+            定义在```TTS.tts.datasets.formatter```中使用的格式化器名称。默认为`""`。
 
         dataset_name (str):
-            Unique name for the dataset. Defaults to `""`.
+            数据集的唯一名称。默认为`""`。
 
         path (str):
-            Root path to the dataset files. Defaults to `""`.
+            数据集文件的根目录。默认为`""`。
 
         meta_file_train (str):
-            Name of the dataset meta file. Or a list of speakers to be ignored at training for multi-speaker datasets.
-            Defaults to `""`.
+            数据集元文件的名称。或多说话人数据集的要在训练中忽略的说话人列表。默认为`""`。
 
         ignored_speakers (List):
-            List of speakers IDs that are not used at the training. Default None.
+            不在训练中使用的说话人ID列表。默认为None。
 
         language (str):
-            Language code of the dataset. If defined, it overrides `phoneme_language`. Defaults to `""`.
+            数据集的语言代码。如果定义，则会覆盖`phoneme_language`。默认为`""`。
 
         phonemizer (str):
-            Phonemizer used for that dataset's language. By default it uses `DEF_LANG_TO_PHONEMIZER`. Defaults to `""`.
+            用于该数据集语言的音素转换器。默认情况下，它使用`DEF_LANG_TO_PHONEMIZER`。默认为`""`。
 
         meta_file_val (str):
-            Name of the dataset meta file that defines the instances used at validation.
+            定义用于验证的实例的数据集元文件的名称。
 
         meta_file_attn_mask (str):
-            Path to the file that lists the attention mask files used with models that require attention masks to
-            train the duration predictor.
+            用于训练持续时间预测器需要注意力掩码的模型所使用的文件的路径。
     """
-
     formatter: str = ""
     dataset_name: str = ""
     path: str = ""

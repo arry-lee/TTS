@@ -674,8 +674,9 @@ class DelightfulTTS(BaseTTSE2E):
 
         self.args.out_channels = self.config.audio.num_mels
         self.args.num_mels = self.config.audio.num_mels
+        #  声学模型
         self.acoustic_model = AcousticModel(args=self.args, tokenizer=tokenizer, speaker_manager=speaker_manager)
-
+        #  声码器？
         self.waveform_decoder = HifiganGenerator(
             self.config.audio.num_mels,
             1,
@@ -703,7 +704,7 @@ class DelightfulTTS(BaseTTSE2E):
         return next(self.parameters()).device
 
     @property
-    def energy_scaler(self):
+    def energy_scaler(self):  #  能量
         return self.acoustic_model.energy_scaler
 
     @property
@@ -715,7 +716,7 @@ class DelightfulTTS(BaseTTSE2E):
         self.acoustic_model.length_scale = value
 
     @property
-    def pitch_mean(self):
+    def pitch_mean(self):  #  平均音高
         return self.acoustic_model.pitch_mean
 
     @pitch_mean.setter
@@ -723,7 +724,7 @@ class DelightfulTTS(BaseTTSE2E):
         self.acoustic_model.pitch_mean = value
 
     @property
-    def pitch_std(self):
+    def pitch_std(self):  #  音高标准差
         return self.acoustic_model.pitch_std
 
     @pitch_std.setter

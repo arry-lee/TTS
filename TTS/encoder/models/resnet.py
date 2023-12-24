@@ -167,7 +167,7 @@ class ResNetSpeakerEncoder(BaseEncoder):
             x = self.torch_spec(x)
 
         if self.log_input:
-            x = (x + 1e-6).log()
+            x = (x + 1e-6).log()  # 防止为0
         x = self.instancenorm(x).unsqueeze(1)
 
         x = self.conv1(x)

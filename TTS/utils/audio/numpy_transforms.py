@@ -10,7 +10,11 @@ from librosa import magphase, pyin
 # For using kwargs
 # pylint: disable=unused-argument
 
-
+# 这是一个用于构建梅尔频谱图基础的函数。
+# 它使用librosa库中的`mel`函数来生成梅尔滤波器组。
+# 函数的参数包括采样率（sample_rate）、FFT大小（fft_size）、梅尔频道数（num_mels）、
+# 最大梅尔频率（mel_fmax）和最小梅尔频率（mel_fmin）。
+# 返回一个包含梅尔滤波器组的numpy数组。
 def build_mel_basis(
     *,
     sample_rate: int = None,

@@ -32,6 +32,26 @@ class LSTMWithoutProjection(nn.Module):
 
 
 class LSTMSpeakerEncoder(BaseEncoder):
+    """
+    这是一个LSTM音频编码器的类实现。它用于将原始音频信号或频谱帧转换成固定维度的音频特征表示。
+
+    构造函数中的参数说明如下：
+    - input_dim: 输入的维度，可以是原始音频信号的采样点数或者频谱帧的维度。
+    - proj_dim: LSTM投影层的维度，默认为256。
+    - lstm_dim: LSTM层的维度，默认为768。
+    - num_lstm_layers: LSTM层数，默认为3。
+    - use_lstm_with_projection: 是否在LSTM层之间使用投影层，默认为True。
+    - use_torch_spec: 是否使用torch_spec来计算频谱，默认为False。
+    - audio_config: 音频配置参数。
+
+    该类的forward方法用于进行模型的前向传递。具体流程如下：
+    1. 如果use_torch_spec为True，则将输入x从三维张量调整为二维张量，并通过torch_spec计算频谱。
+    2. 对输入x进行Instance Normalization，并调整维度从(batch_size, input_dim, sequence_length)变为(batch_size, sequence_length, input_dim)。
+    3. 将调整后的x输入到LSTM层中进行处理。
+    4. 如果use_lstm_with_projection为True，则取最后一层LSTM的输出作为最终结果；否则，直接使用LSTMWithoutProjection的输出。
+    5. 如果l2_norm为True，则对输出进行L2归一化处理。
+    6. 返回最终的音频特征表示。
+    """
     def __init__(
         self,
         input_dim,
